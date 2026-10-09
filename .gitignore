@@ -14,3 +14,5 @@ validate.log
 servers/api/.env
 servers/api/.env
 servers/api/.env
+
+.vercel

@@ -10,7 +10,7 @@ import { createIdentityUserModel } from "../user.model.js";
 import { createUserProfileQueryAdapter } from "../profile-query.adapter.js";
 
 void test("user profile update writes the canonical Identity user and supports a fresh userById read", async (context) => {
-  const databaseName = `identity_gateway_test_${String(process.pid)}_${randomUUID()}`;
+  const databaseName = `identity_gateway_${String(process.pid)}_${randomUUID().replaceAll("-", "")}`;
   let connection: mongoose.Connection;
 
   try {

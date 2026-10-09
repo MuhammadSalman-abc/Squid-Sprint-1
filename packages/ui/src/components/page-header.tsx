@@ -8,12 +8,12 @@ type PageHeaderProps = Readonly<{
 }>;
 
 export const PageHeader = ({ description, eyebrow, icon, title }: PageHeaderProps): React.ReactElement => (
-  <header className="border-b border-border pb-8">
-    <div className="mb-5 flex size-11 items-center justify-center rounded-md bg-primary text-primary-foreground shadow-sm">
+  <header className="mb-8 border-b border-border pb-7 sm:mb-9 sm:pb-8">
+    <div className="mb-5 flex size-12 items-center justify-center rounded-2xl border border-primary/10 bg-accent text-accent-foreground shadow-sm shadow-primary/5">
       {icon}
     </div>
-    <p className="mb-2 text-sm font-semibold text-foreground">{eyebrow}</p>
-    <h1 className="max-w-2xl text-3xl font-semibold text-foreground sm:text-4xl">{title}</h1>
-    <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">{description}</p>
+    <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">{eyebrow}</p>
+    <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.04em] text-foreground sm:text-[2.5rem]">{title}</h1>
+    <p className="mt-3 max-w-2xl text-[15px] leading-7 text-muted-foreground">{description}</p>
   </header>
 );

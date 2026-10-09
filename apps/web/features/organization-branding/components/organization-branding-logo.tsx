@@ -18,13 +18,13 @@ export const OrganizationBrandingLogo = ({
   organizationName,
   size = "small"
 }: OrganizationBrandingLogoProps) => {
-  const [logoFailed, setLogoFailed] = useState(false);
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
   const dimensions = size === "large" ? "size-16 rounded-2xl text-xl" : "size-11 rounded-xl text-sm";
 
-  if (logoUrl && !logoFailed) {
+  if (logoUrl && failedLogoUrl !== logoUrl) {
     return (
       <div className={`flex shrink-0 items-center justify-center overflow-hidden border border-border ${dimensions}`} style={{ backgroundColor: accentColor }}>
-        <Image alt={organizationName} className="size-full bg-white object-contain p-1" height={96} onError={() => setLogoFailed(true)} src={logoUrl} unoptimized width={96} />
+        <Image alt={organizationName} className="size-full bg-white object-contain p-1" height={96} onError={() => setFailedLogoUrl(logoUrl)} src={logoUrl} unoptimized width={96} />
       </div>
     );
   }

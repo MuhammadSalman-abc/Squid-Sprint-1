@@ -6,7 +6,7 @@ import { createWorkspaceMembershipQueryAdapter } from "../membership-query.adapt
 import { WORKSPACE_MEMBERSHIP_COLLECTION } from "../membership-query.adapter.js";
 
 void test("Workspace membership query excludes inactive memberships, workspaces, and organizations", async (context) => {
-  const databaseName = `workspace_membership_test_${String(process.pid)}_${randomUUID()}`;
+  const databaseName = `workspace_member_${String(process.pid)}_${randomUUID().replaceAll("-", "")}`;
   let connection: mongoose.Connection;
 
   try {
@@ -48,8 +48,8 @@ void test("Workspace membership query excludes inactive memberships, workspaces,
     ]);
 
     const membershipPort = createWorkspaceMembershipQueryAdapter(connection);
-    assert.deepEqual(await membershipPort.activeMembershipsFor("user-1"), [{ workspaceId: "workspace-active" }]);
-    assert.deepEqual(await membershipPort.activeMembershipsFor("user-2"), [{ workspaceId: "workspace-active" }]);
+    assert.deepEqual(await membershipPort.activeMembershipsFor("user-1"), [{ workspaceId: "workspace-active", role: "owner", guest: false }]);
+    assert.deepEqual(await membershipPort.activeMembershipsFor("user-2"), [{ workspaceId: "workspace-active", role: "owner", guest: false }]);
     assert.deepEqual(await membershipPort.activeMembershipsFor("missing-user"), []);
   } finally {
     await connection.dropDatabase();

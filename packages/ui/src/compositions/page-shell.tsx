@@ -8,12 +8,12 @@ type PageShellProps = Readonly<{
 }>;
 
 const widths: Readonly<Record<NonNullable<PageShellProps["width"]>, string>> = {
-  standard: "max-w-5xl",
-  narrow: "max-w-3xl"
+  standard: "max-w-6xl",
+  narrow: "max-w-4xl"
 };
 
 export const PageShell = ({ children, className, width = "standard" }: PageShellProps): React.ReactElement => (
-  <main className={cn("mx-auto flex min-h-screen w-full flex-col px-6 py-10 sm:px-10 sm:py-16", widths[width], className)}>
+  <main className={cn("mx-auto flex w-full flex-col py-3 sm:py-4", widths[width], className)}>
     {children}
   </main>
 );

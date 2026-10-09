@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import type { RootLayoutProps } from "@/types";
+import { ApplicationShell } from "@/features/application-shell";
 
-const ApplicationLayout = ({ children }: RootLayoutProps): ReactElement => <>{children}</>;
+const ApplicationLayout = ({ children }: RootLayoutProps): ReactElement => <ApplicationShell>{children}</ApplicationShell>;
 
 export default ApplicationLayout;

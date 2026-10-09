@@ -7,7 +7,7 @@ import { createSessionModel } from "../session.model.js";
 import { createSessionQueryAdapter } from "../session-query.adapter.js";
 
 void test("session lookup refreshes active sessions and marks overdue sessions expired", async (context) => {
-  const databaseName = `identity_sessions_test_${String(process.pid)}_${randomUUID()}`;
+  const databaseName = `identity_sessions_${String(process.pid)}_${randomUUID().replaceAll("-", "")}`;
   let connection: mongoose.Connection;
 
   try {
