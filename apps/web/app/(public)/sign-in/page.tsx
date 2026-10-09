@@ -12,6 +12,7 @@ type SignInError = Readonly<{ title: string; description: string }>;
 
 const signInErrors: Readonly<Record<string, SignInError>> = Object.freeze({
   credentials: { title: "Email or password is incorrect", description: "Check your credentials and try again." },
+  service: { title: "Sign-in service is unavailable", description: "The API could not be reached. Try again after the service is deployed and connected." },
   "provider-unavailable": { title: "Sign-in provider unavailable", description: "Google or Microsoft could not complete sign-in. Try again in a moment." },
   "invalid-sign-in": { title: "Sign-in could not be verified", description: "No account or session was created. Choose a provider to try again." },
   "account-closed": { title: "This account is closed", description: "Contact your organization administrator for help." }

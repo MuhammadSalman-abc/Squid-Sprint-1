@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch server.ts",
+    "dev": "tsx watch dev-server.ts",
     "seed:preview": "tsx scripts/seed-preview.ts",
     "measure:organization-budget": "tsx scripts/measure-organization-budget.ts",
     "measure:organization-settings-budget": "tsx scripts/measure-organization-settings-budget.ts",
@@ -12,7 +12,7 @@
     "measure:organization-setup-budget": "tsx scripts/measure-organization-setup-budget.ts",
     "measure:workspace-dashboard-budget": "tsx scripts/measure-workspace-dashboard-budget.ts",
     "build": "tsc -p tsconfig.build.json",
-    "start": "node dist/server.js",
+    "start": "node dist/dev-server.js",
     "test:branding-budget": "tsx scripts/organization-branding-budget.ts",
     "test": "tsx --test features/auth/tests/*.test.ts tests/auth-organization-flow.test.ts features/health/tests/*.test.ts features/workspace/tests/*.test.ts features/workspace/domain/__tests__/*.test.ts features/workspace/integrations/tests/*.test.ts features/organization-branding-demo/tests/*.test.ts kernel/tests/*.test.ts features/outbox/tests/*.test.ts integrations/mongodb/tests/*.test.ts integrations/mongodb/*/tests/*.test.ts integrations/redis/tests/*.test.ts features/identity/tests/*.test.ts features/identity/tests/integration/*.int.test.ts features/*/tests/*.test.ts tests/entry-points.test.ts tests/collection-allow-list.test.ts tests/environment.test.ts tests/http-boundaries.test.ts tests/identity-sign-in.acceptance.test.ts tests/mongodb.test.ts tests/shutdown.test.ts",
     "test:identity-load": "tsx --test tests/identity-sign-in.load.test.ts tests/identity-principal.load.test.ts",
