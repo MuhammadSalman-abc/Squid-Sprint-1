@@ -17,7 +17,7 @@
     "test": "tsx --test features/auth/tests/*.test.ts tests/auth-organization-flow.test.ts features/health/tests/*.test.ts features/workspace/tests/*.test.ts features/workspace/domain/__tests__/*.test.ts features/workspace/integrations/tests/*.test.ts features/organization-branding-demo/tests/*.test.ts kernel/tests/*.test.ts features/outbox/tests/*.test.ts integrations/mongodb/tests/*.test.ts integrations/mongodb/*/tests/*.test.ts integrations/redis/tests/*.test.ts features/identity/tests/*.test.ts features/identity/tests/integration/*.int.test.ts features/*/tests/*.test.ts tests/entry-points.test.ts tests/collection-allow-list.test.ts tests/environment.test.ts tests/http-boundaries.test.ts tests/identity-sign-in.acceptance.test.ts tests/mongodb.test.ts tests/shutdown.test.ts",
     "test:identity-load": "tsx --test tests/identity-sign-in.load.test.ts tests/identity-principal.load.test.ts",
     "perf:identity-profile": "tsx scripts/seed-identity-profile.ts",
-    "lint": "eslint \"**/*.ts\"",
+    "lint": "eslint \"**/*.{ts,mts}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
