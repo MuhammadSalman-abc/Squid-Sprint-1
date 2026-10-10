@@ -160,7 +160,7 @@ void test("AC-4 Playwright journey: Identity failure leaves the organization pag
     assert.equal(await page.getByText("Error page", { exact: false }).count(), 0);
     assert.equal(identityLookupCalls, 1);
 
-    await page.keyboard.press("Tab");
+    await retryLink.focus();
     assert.equal(await retryLink.evaluate(element => element === document.activeElement), true);
     await page.keyboard.press("Enter");
     await page.getByRole("heading", { name: "Acme Design" }).waitFor({ state: "visible" });

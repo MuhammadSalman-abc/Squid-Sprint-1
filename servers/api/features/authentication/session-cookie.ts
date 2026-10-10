@@ -3,7 +3,7 @@ import { systemClock } from "@workspace/kernel";
 import type { Clock } from "@workspace/kernel";
 import type { ActiveSession, SessionQueryPort } from "../identity/public.js";
 
-export const SESSION_COOKIE_NAME = "squid_session";
+export const SESSION_COOKIE_NAME = "workspace_session";
 
 export type SessionCookieResolver = ((cookieHeader: string | undefined) => Promise<ActiveSession | null>) & Readonly<{
   invalidateSession: (sessionId: string) => void;

@@ -13,6 +13,13 @@ export type UserSessionItem = Readonly<{
 
 type UserSessionsManagerProps = Readonly<{ initialSessions: readonly UserSessionItem[] }>;
 
+const sessionTimestampFormatter = new Intl.DateTimeFormat("en-GB", {
+  dateStyle: "short",
+  timeStyle: "medium",
+  timeZone: "UTC",
+  hourCycle: "h23"
+});
+
 export const UserSessionsManager = ({ initialSessions }: UserSessionsManagerProps): ReactElement => {
   const [sessions, setSessions] = useState(initialSessions);
   const [message, setMessage] = useState("");
@@ -54,7 +61,7 @@ export const UserSessionsManager = ({ initialSessions }: UserSessionsManagerProp
             <li className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4" key={session.sessionId}>
               <div className="grid gap-1">
                 <p className="font-medium">{session.device}{session.isCurrent ? <span className="ml-2 text-sm text-muted-foreground">This device</span> : null}</p>
-                <p className="text-sm text-muted-foreground">Last active {new Date(session.lastUsedAt).toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Last active {sessionTimestampFormatter.format(new Date(session.lastUsedAt))} UTC</p>
               </div>
               <Button disabled={revoking !== null} onClick={() => void revoke(session)} type="button" variant="outline">
                 {revoking === session.sessionId ? "Signing out…" : "Sign out"}

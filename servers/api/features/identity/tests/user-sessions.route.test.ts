@@ -52,7 +52,7 @@ void test("session list returns only the signed-in user's active sessions and ma
   const server = await startServer(app);
   context.after(server.close);
 
-  const response = await fetch(`${server.origin}/identity/sessions`, { headers: { cookie: "squid_session=lena-token" } });
+  const response = await fetch(`${server.origin}/identity/sessions`, { headers: { cookie: "workspace_session=lena-token" } });
 
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), [
@@ -80,7 +80,7 @@ void test("revoking another user's session returns NotFound, does not revoke it,
 
   const response = await fetch(`${server.origin}/identity/sessions/omars-session`, {
     method: "DELETE",
-    headers: { cookie: "squid_session=lena-token" }
+    headers: { cookie: "workspace_session=lena-token" }
   });
   const body = await response.json() as { error: { code: string } };
 

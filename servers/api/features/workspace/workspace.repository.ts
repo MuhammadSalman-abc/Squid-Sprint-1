@@ -77,19 +77,32 @@ export const createWorkspaceRepository = ({
       if (!organization) return null;
 
       const workspaceIds = eligibleWorkspaces.map(w => w._id);
-      const activeMemberships = workspaceIds.length === 0 ? [] : await memberships.find({
-          workspaceId: { $in: workspaceIds },
-          status: "ACTIVE",
-          deletedAt: { $exists: false }
-        });
-      const activeMemberWorkspaceIds = [...new Set(activeMemberships
-        .filter(membership => membership.userId === principal.userId)
-        .map(membership => membership.workspaceId))];
-      const activeMemberCountByWorkspace = new Map<string, Set<string>>();
-      for (const membership of activeMemberships) {
-        const workspaceMembers = activeMemberCountByWorkspace.get(membership.workspaceId) ?? new Set<string>();
-        workspaceMembers.add(membership.userId);
-        activeMemberCountByWorkspace.set(membership.workspaceId, workspaceMembers);
+      const activeMembershipFilter = {
+        workspaceId: { $in: workspaceIds },
+        status: "ACTIVE",
+        deletedAt: { $exists: false }
+      };
+      const activeMemberCountByWorkspace = new Map<string, number>();
+      let activeMemberWorkspaceIds: string[] = [];
+      if (workspaceIds.length > 0 && memberships.countDistinctByGroup) {
+        const [counts, principalMemberships] = await Promise.all([
+          memberships.countDistinctByGroup(activeMembershipFilter, "workspaceId", "userId"),
+          memberships.find({ ...activeMembershipFilter, userId: principal.userId })
+        ]);
+        for (const { groupValue, count } of counts) activeMemberCountByWorkspace.set(groupValue, count);
+        activeMemberWorkspaceIds = [...new Set(principalMemberships.map(membership => membership.workspaceId))];
+      } else if (workspaceIds.length > 0) {
+        const activeMemberships = await memberships.find(activeMembershipFilter);
+        activeMemberWorkspaceIds = [...new Set(activeMemberships
+          .filter(membership => membership.userId === principal.userId)
+          .map(membership => membership.workspaceId))];
+        const memberIdsByWorkspace = new Map<string, Set<string>>();
+        for (const membership of activeMemberships) {
+          const workspaceMembers = memberIdsByWorkspace.get(membership.workspaceId) ?? new Set<string>();
+          workspaceMembers.add(membership.userId);
+          memberIdsByWorkspace.set(membership.workspaceId, workspaceMembers);
+        }
+        for (const [workspaceId, memberIds] of memberIdsByWorkspace) activeMemberCountByWorkspace.set(workspaceId, memberIds.size);
       }
 
       const status = organization.status ?? (organization.archivedAt ? "ARCHIVED" : "ACTIVE");
@@ -108,7 +121,7 @@ export const createWorkspaceRepository = ({
         id: workspace._id,
         name: workspace.name,
         state: workspace.status === "ARCHIVED" ? "ARCHIVED" : "ACTIVE",
-        activeMemberCount: activeMemberCountByWorkspace.get(workspace._id)?.size ?? 0
+        activeMemberCount: activeMemberCountByWorkspace.get(workspace._id) ?? 0
       }));
       const profileResult = buildOrganizationProfile({
         principal,

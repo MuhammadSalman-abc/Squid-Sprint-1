@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import Link from "next/link";
 import { CircleAlert } from "lucide-react";
 import { Button, MessageState } from "@workspace/ui";
 
@@ -12,7 +13,7 @@ export const UserProfileErrorState = ({ message, retryable }: UserProfileErrorSt
     action={retryable ? (
       <div className="mt-6">
         <Button asChild variant="outline">
-          <a href="/identity/user-profile">Retry profile load</a>
+          <Link href="/identity/user-profile">Retry profile load</Link>
         </Button>
       </div>
     ) : undefined}

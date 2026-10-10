@@ -129,7 +129,7 @@ void test("AC-1: verified first callback creates the user, outbox event, and ACT
   const response = await callbackRequest(server.origin, flowCookie);
 
   assert.equal(response.status, 303);
-  assert.equal(response.headers.get("location"), "http://web.test/identity/user-profile");
+  assert.equal(response.headers.get("location"), "http://web.test/workspace/organization");
   assert.equal(store.users.length, 1);
   assert.deepEqual(store.users[0] && {
     provider: store.users[0].provider,
@@ -198,7 +198,7 @@ void test("AC-5: provider outage leaves the existing ACTIVE session able to reso
   }, completion);
   app.get("/identity/principal", async (request, response) => {
     const resolver = createPrincipalResolver({
-      resolveSession: () => Promise.resolve(request.headers.cookie === "squid_session:omar" ? { sessionId: "omar-session", userId: "omar" } : null),
+      resolveSession: () => Promise.resolve(request.headers.cookie === "workspace_session:omar" ? { sessionId: "omar-session", userId: "omar" } : null),
       memberships: { activeMembershipsFor: () => Promise.resolve([{ workspaceId: "omar-workspace" }]) }
     });
     const result = await resolver.resolve(request.headers.cookie);
@@ -208,7 +208,7 @@ void test("AC-5: provider outage leaves the existing ACTIVE session able to reso
   context.after(server.close);
 
   const unavailable = await fetch(`${server.origin}/identity/sign-in/google`, { redirect: "manual" });
-  const nextRequest = await fetch(`${server.origin}/identity/principal`, { headers: { cookie: "squid_session:omar" } });
+  const nextRequest = await fetch(`${server.origin}/identity/principal`, { headers: { cookie: "workspace_session:omar" } });
 
   assert.equal(unavailable.status, 303);
   assert.match(unavailable.headers.get("location") ?? "", /\/sign-in\?error=provider-unavailable$/);
@@ -232,7 +232,7 @@ void test("permission refusal: profile route returns 403 when the principal has 
   const server = await startServer(app);
   context.after(server.close);
 
-  const response = await fetch(`${server.origin}/identity/user-profile`, { headers: { cookie: "squid_session=active" } });
+  const response = await fetch(`${server.origin}/identity/user-profile`, { headers: { cookie: "workspace_session=active" } });
   const body = await response.json() as ApiErrorResponse;
 
   assert.equal(response.status, 403);

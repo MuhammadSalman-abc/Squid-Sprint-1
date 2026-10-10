@@ -13,6 +13,7 @@ import {
 import type { OidcProviderPort, OidcSignInControllerDependencies } from "../features/authentication/index.js";
 import { createWorkspaceBootstrap } from "../features/workspace/index.js";
 import type { MongoDbIntegration } from "../integrations/index.js";
+import type { Principal as WorkspacePrincipal } from "../types/index.js";
 import {
   createIdentityUserModel,
   createSessionModel,
@@ -46,6 +47,7 @@ export type IdentityRuntime = Readonly<{
   }>;
   authentication: OidcSignInControllerDependencies;
   sessionManagement: UserSessionsRouteDependencies;
+  resolveWorkspacePrincipal: (token: string) => Promise<WorkspacePrincipal | null>;
 }>;
 
 export const createIdentityRuntime = (database: MongoDbIntegration, config: ApiConfig, logger: Logger): IdentityRuntime => {
@@ -61,6 +63,12 @@ export const createIdentityRuntime = (database: MongoDbIntegration, config: ApiC
     deviceLabel: "Unknown device"
   });
   const resolveSession = createSessionCookieResolver({ sessions: sessionPort });
+  const resolveWorkspacePrincipal = async (token: string): Promise<WorkspacePrincipal | null> => {
+    const session = await resolveSession(`workspace_session=${token}`);
+    if (!session) return null;
+    const workspaceIds = [...new Set((await membershipPort.activeMembershipsFor(session.userId)).map(({ workspaceId }) => workspaceId))];
+    return workspaceIds.length > 0 ? { userId: session.userId, workspaceIds } : null;
+  };
   const principalResolver = createPrincipalResolver({
     resolveSession,
     invalidateResolvedSession: resolveSession.invalidateSession,
@@ -125,6 +133,7 @@ export const createIdentityRuntime = (database: MongoDbIntegration, config: ApiC
     profile: profileDependencies,
     userInvitations,
     sessionManagement,
+    resolveWorkspacePrincipal,
     authentication: Object.freeze({
       provider: oidcProvider,
       flowCookie,

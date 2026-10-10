@@ -179,7 +179,7 @@ export const createOidcSignInController = ({
         path: "/",
         maxAge: SESSION_LIFETIME_MS
       });
-      response.redirect(303, new URL("/identity/user-profile", webOrigin).href);
+      response.redirect(303, new URL("/workspace/organization", webOrigin).href);
     } catch (error: unknown) {
       next(error);
     }

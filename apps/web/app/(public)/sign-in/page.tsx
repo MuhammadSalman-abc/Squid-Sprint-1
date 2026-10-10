@@ -1,7 +1,8 @@
 import type { ReactElement } from "react";
+import type { Route } from "next";
+import Link from "next/link";
 import { ArrowUpRight, Building2, KeyRound } from "lucide-react";
 import { Button } from "@workspace/ui";
-import { createApiConfiguration, readWebEnvironment } from "@/config";
 import { signIn } from "@/features/auth/auth.actions";
 
 type SignInPageProps = Readonly<{
@@ -22,8 +23,6 @@ const SignInPage = async ({ searchParams }: SignInPageProps): Promise<ReactEleme
   const parameters = await searchParams;
   const errorCode = typeof parameters.error === "string" ? parameters.error : undefined;
   const error = errorCode ? signInErrors[errorCode] : undefined;
-  const apiBaseUrl = createApiConfiguration(readWebEnvironment()).baseUrl.replace(/\/$/, "");
-
   return (
     <main className="min-h-screen bg-muted/30 lg:grid lg:grid-cols-[minmax(0,1.05fr)_minmax(28rem,0.95fr)]">
       <section aria-label="Squid workspace" className="relative hidden min-h-screen flex-col justify-between overflow-hidden bg-primary p-10 text-primary-foreground lg:flex xl:p-14">
@@ -57,8 +56,8 @@ const SignInPage = async ({ searchParams }: SignInPageProps): Promise<ReactEleme
             {error ? <section aria-live="polite" className="mb-6 rounded-xl border border-destructive/40 bg-destructive/5 p-4" role="alert"><h3 className="text-sm font-semibold text-foreground">{error.title}</h3><p className="mt-1 text-sm leading-5 text-muted-foreground">{error.description}</p></section> : null}
 
             <div aria-label="Sign-in providers" className="grid gap-3">
-              <Button asChild className="h-11 justify-between px-4" size="lg" variant="outline"><a href={`${apiBaseUrl}/identity/sign-in/google`}><span>Continue with Google</span><ArrowUpRight aria-hidden="true" className="size-4 text-muted-foreground" /></a></Button>
-              <Button asChild className="h-11 justify-between px-4" size="lg" variant="outline"><a href={`${apiBaseUrl}/identity/sign-in/microsoft`}><span>Continue with Microsoft</span><ArrowUpRight aria-hidden="true" className="size-4 text-muted-foreground" /></a></Button>
+              <Button asChild className="h-11 justify-between px-4" size="lg" variant="outline"><Link href={"/identity/sign-in/google" as Route} prefetch={false}><span>Continue with Google</span><ArrowUpRight aria-hidden="true" className="size-4 text-muted-foreground" /></Link></Button>
+              <Button asChild className="h-11 justify-between px-4" size="lg" variant="outline"><Link href={"/identity/sign-in/microsoft" as Route} prefetch={false}><span>Continue with Microsoft</span><ArrowUpRight aria-hidden="true" className="size-4 text-muted-foreground" /></Link></Button>
             </div>
 
             <div className="my-6 flex items-center gap-4" role="separator" aria-label="Or use email and password"><span className="h-px flex-1 bg-border" /><span className="text-xs font-medium text-muted-foreground">OR CONTINUE WITH EMAIL</span><span className="h-px flex-1 bg-border" /></div>

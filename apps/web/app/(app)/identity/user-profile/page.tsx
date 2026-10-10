@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import Link from "next/link";
 import type { ReactElement } from "react";
 import { UserRound } from "lucide-react";
 import { z } from "zod";
@@ -132,7 +133,7 @@ const UserProfilePage = async (): Promise<ReactElement> => {
       />
       <UserProfileEditor email={state.email} name={state.name} version={state.version} />
       <div className="mt-4">
-        <Button asChild variant="outline"><a href="/identity/sessions">Manage active sessions</a></Button>
+        <Button asChild variant="outline"><Link href="/identity/sessions">Manage active sessions</Link></Button>
       </div>
     </PageShell>
   );

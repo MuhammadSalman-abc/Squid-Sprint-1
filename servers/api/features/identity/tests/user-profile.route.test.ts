@@ -69,12 +69,12 @@ void test("profile API resolves the cookie principal before calling the gateway"
   context.after(server.close);
 
   const response = await fetch(`${server.origin}/identity/user-profile`, {
-    headers: { cookie: "squid_session=opaque-session-token" }
+    headers: { cookie: "workspace_session=opaque-session-token" }
   });
 
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { email: "lena@example.test", name: "Lena Park", version: 0 });
-  assert.equal(receivedCookie, "squid_session=opaque-session-token");
+  assert.equal(receivedCookie, "workspace_session=opaque-session-token");
   assert.deepEqual(receivedGatewayPrincipal, {
     userId: "user-1",
     sessionId: "session-1",
@@ -115,7 +115,7 @@ void test("profile gateway failure emits an error signal with the resolved works
   context.after(server.close);
 
   const response = await fetch(`${server.origin}/identity/user-profile`, {
-    headers: { cookie: "squid_session=opaque-session-token" }
+    headers: { cookie: "workspace_session=opaque-session-token" }
   });
 
   assert.equal(response.status, 500);
@@ -172,7 +172,7 @@ void test("profile update accepts a versioned display name and returns the saved
 
   const response = await fetch(`${server.origin}/identity/user-profile`, {
     method: "PUT",
-    headers: { cookie: "squid_session=opaque-session-token", "content-type": "application/json" },
+    headers: { cookie: "workspace_session=opaque-session-token", "content-type": "application/json" },
     body: JSON.stringify({ name: "  Lena Park  ", version: 0 })
   });
 
@@ -215,7 +215,7 @@ void test("profile update refuses empty, overlong, and provider-owned email inpu
   for (const input of invalidInputs) {
     const response = await fetch(`${server.origin}/identity/user-profile`, {
       method: "PUT",
-      headers: { cookie: "squid_session=opaque-session-token", "content-type": "application/json" },
+      headers: { cookie: "workspace_session=opaque-session-token", "content-type": "application/json" },
       body: JSON.stringify(input)
     });
     assert.equal(response.status, 400);
@@ -226,7 +226,7 @@ void test("profile update refuses empty, overlong, and provider-owned email inpu
   for (const acceptedName of ["A", "x".repeat(80)]) {
     const response = await fetch(`${server.origin}/identity/user-profile`, {
       method: "PUT",
-      headers: { cookie: "squid_session=opaque-session-token", "content-type": "application/json" },
+      headers: { cookie: "workspace_session=opaque-session-token", "content-type": "application/json" },
       body: JSON.stringify({ name: acceptedName, version: 0 })
     });
     assert.equal(response.status, 200);
@@ -256,7 +256,7 @@ void test("profile update conflict returns the latest canonical profile for the 
 
   const response = await fetch(`${server.origin}/identity/user-profile`, {
     method: "PUT",
-    headers: { cookie: "squid_session=opaque-session-token", "content-type": "application/json" },
+    headers: { cookie: "workspace_session=opaque-session-token", "content-type": "application/json" },
     body: JSON.stringify({ name: "Lena Park", version: 1 })
   });
   const body = await response.json() as ApiErrorResponse;

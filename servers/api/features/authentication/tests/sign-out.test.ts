@@ -26,7 +26,7 @@ void test("sign-out revokes the cookie's session and clears the cookie", async (
     webOrigin: "http://localhost:3000",
     secureCookies: false,
     resolveSession: (cookieHeader) => {
-      assert.equal(cookieHeader, "squid_session=current-device-token");
+      assert.equal(cookieHeader, "workspace_session=current-device-token");
       return Promise.resolve({ sessionId: "session-current", userId: "user-1" });
     },
     sessions: {
@@ -52,11 +52,11 @@ void test("sign-out revokes the cookie's session and clears the cookie", async (
 
   const response = await fetch(`http://127.0.0.1:${String(address.port)}/identity/session`, {
     method: "DELETE",
-    headers: { cookie: "squid_session=current-device-token" }
+    headers: { cookie: "workspace_session=current-device-token" }
   });
 
   assert.equal(response.status, 204);
-  assert.match(response.headers.get("set-cookie") ?? "", /squid_session=;/);
+  assert.match(response.headers.get("set-cookie") ?? "", /workspace_session=;/);
   assert.deepEqual(revoked, {
     sessionId: "session-current",
     userId: "user-1"

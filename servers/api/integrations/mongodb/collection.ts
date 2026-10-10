@@ -5,6 +5,7 @@ export type DocumentFilter = Record<string, unknown>;
 export type ReadableCollection<T> = Readonly<{
   find: (filter: DocumentFilter) => Promise<T[]>;
   findOne: (filter: DocumentFilter) => Promise<T | null>;
+  countDistinctByGroup?: (filter: DocumentFilter, groupField: string, distinctField: string) => Promise<readonly Readonly<{ groupValue: string; count: number }>[]>;
 }>;
 
 const toObjectId = (id: string): Types.ObjectId | string => {
@@ -57,6 +58,17 @@ export const createReadableCollection = <T>(collectionName: string, idFields: st
       const mongoFilter = convertFilterToMongo(filter, idFields);
       const doc = await db.collection(collectionName).findOne(mongoFilter);
       return doc ? convertDocFromMongo(doc) as T : null;
+    },
+    countDistinctByGroup: async (filter: DocumentFilter, groupField: string, distinctField: string) => {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      const mongoFilter = convertFilterToMongo(filter, idFields);
+      const results = await db.collection(collectionName).aggregate<{ _id: unknown; count: number }>([
+        { $match: mongoFilter },
+        { $group: { _id: { group: `$${groupField}`, distinct: `$${distinctField}` } } },
+        { $group: { _id: "$_id.group", count: { $sum: 1 } } }
+      ]).toArray();
+      return results.map(result => ({ groupValue: String(result._id), count: result.count }));
     }
   });
 };

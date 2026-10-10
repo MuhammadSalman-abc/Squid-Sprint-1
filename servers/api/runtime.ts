@@ -33,6 +33,7 @@ export const apiRuntimePromise = (async () => {
     ...(identity ? { identity: identity.profile } : {}),
     ...(identity ? { userInvitations: identity.userInvitations } : {}),
     ...(identity ? { identitySessions: identity.sessionManagement } : {}),
+    ...(identity ? { resolveIdentityPrincipal: identity.resolveWorkspacePrincipal } : {}),
     ...(identity?.authentication ? { authentication: identity.authentication } : {}),
     ...(config.temporaryOrganizationBrandingDemo ? { temporaryBrandingDemoReader: workspaceBrandingMongoQueries } : {})
   });

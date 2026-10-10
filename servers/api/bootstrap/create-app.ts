@@ -20,6 +20,7 @@ import {
 import { createTemporaryOrganizationBrandingRoutes, type TemporaryBrandingReader } from "../features/organization-branding-demo/index.js";
 import { createReadableCollection } from "../integrations/mongodb/index.js";
 import { createCorsMiddleware, createErrorHandler, createNotFoundHandler } from "../middleware/index.js";
+import type { Principal } from "../types/index.js";
 
 type AppDependencies = Readonly<{
   config: ApiConfig;
@@ -37,6 +38,7 @@ type AppDependencies = Readonly<{
     activeMembershipsFor: (userId: string) => Promise<readonly Readonly<{ workspaceId: string }>[]>;
   }>;
   identitySessions?: UserSessionsRouteDependencies;
+  resolveIdentityPrincipal?: (token: string) => Promise<Principal | null>;
   authentication?: OidcSignInControllerDependencies;
 }>;
 
@@ -54,6 +56,7 @@ export const createApp = ({
   identity,
   userInvitations,
   identitySessions,
+  resolveIdentityPrincipal,
   authentication
 }: AppDependencies): Express => {
   const app = express();
@@ -65,9 +68,13 @@ export const createApp = ({
   app.use(createCorsMiddleware({ origin: config.webOrigin }));
   app.use(express.json({ limit: apiRuntime.jsonBodyLimit }));
 
-  const authenticatedPrincipal: PrincipalResolver = request => resolvePrincipal
-    ? resolvePrincipal(request)
-    : authService.resolvePrincipal(readBearerToken(request));
+  const authenticatedPrincipal: PrincipalResolver = async request => {
+    if (resolvePrincipal) return resolvePrincipal(request);
+    const token = readBearerToken(request);
+    const legacyPrincipal = await authService.resolvePrincipal(token);
+    if (legacyPrincipal || !token || !resolveIdentityPrincipal) return legacyPrincipal;
+    return resolveIdentityPrincipal(token);
+  };
   const users = createReadableCollection<{ _id: string; displayName?: string }>("users", ["_id"]);
   const profileRoutes = identity
     ? createUserProfileRoutes({
