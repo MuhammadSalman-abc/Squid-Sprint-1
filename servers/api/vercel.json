@@ -1,13 +1,4 @@
 {
-  "version": 2,
-  "functions": {
-    "index.ts": {
-      "runtime": "@vercel/node@5.0.0",
-      "includeFiles": "**/*.ts"
-    }
-  }
-}
-{
   "installCommand": "cd ../.. && pnpm install",
   "buildCommand": "echo 'No build needed'"
 }
