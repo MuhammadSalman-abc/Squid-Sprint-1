@@ -6,7 +6,8 @@
     "rootDir": ".",
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "allowImportingTsExtensions": false
   },
   "exclude": ["dist", "node_modules", "tests"]
-}
+} 
