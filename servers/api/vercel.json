@@ -7,3 +7,7 @@
     }
   }
 }
+{
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "echo 'No build needed'"
+}
